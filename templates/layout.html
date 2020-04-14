@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <!-- Required meta tags -->
+    {%block style%}{%endblock%}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type = "text/css" href="{{url_for('static',filename='bootstrap.min.css')}}">
+    <link rel="stylesheet" type = "text/css" href="{{url_for('static',filename = 'main.css')}}">
+    <link rel="stylesheet" type = "text/css" href="{{url_for('static',filename = 'obvious-buttons.css')}}">
+    {%block css%} {% endblock %}
+    <meta charset="utf-8">
+    {% if title %}
+    <title>{{title}}</title>
+    {% else %}
+    <title>Flask app</title>
+    {% endif %}
+  </head>
+  <body>
+
+
+  {% block cont%}{% endblock %}
+
+  </body>
+</html>

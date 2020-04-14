@@ -1,0 +1,114 @@
+
+.lobby-messages-box {
+  position: absolute;
+  left: 0px;
+  margin-left: 5px;
+  width: 350px;
+  border: 3px solid #ff3333;
+  padding: 8px;
+}
+
+.user-message-in-chatbox{
+  border-left: 5px solid #ff3333;
+  background-color: lightgrey;
+  padding-left: 2px;
+  }
+
+.sys-message-in-chatbox{
+  background-color: lightgrey;
+  padding-left: 2px;
+  }
+
+.innerdiv_users_connected{
+  width:420px;
+  margin:1px auto;
+  text-align: left;
+}
+
+.game-start{
+  position: absolute;
+  right: 0px;
+  width: 300px;
+  border: 3px solid #ff3333;
+  padding: 8px;
+  margin-right: 20px;
+  margin-top: 30px;
+}
+
+.whos-turn{
+  position: absolute;
+  right: 0px;
+  width: 320px;
+  height: 60px;
+  border: 3px solid #ff4d4d;
+  padding: 8px;
+  margin-top: 5px;
+  margin-right: 20px;
+  margin-bottom: 15px;
+  }
+
+#finished{
+  text-align :center;
+  margin-top: 5px;
+}
+
+#score-board{
+  position: absolute;
+  right: 0px;
+  width: 320px;
+  border: 3px solid #ff4d4d;
+  padding: 8px;
+  margin-right: 20px;
+  margin-top: 100px;
+}
+
+.text-above-grid{
+  margin-top: 5px;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.grid{
+position: relative;
+margin : 50px 420px 10px 420px;
+border: 3px solid #ff4d4d;
+}
+
+.item{
+  display: block;
+  position: absolute;
+  height: 100px;
+  width: 90px;
+  margin : 0px;
+  text-align: center;
+  z-index: 1;
+}
+
+.item.muuri-item-dragging {
+  z-index: 3;
+}
+.item.muuri-item-releasing {
+  z-index: 2;
+}
+.item.muuri-item-hidden {
+  z-index: 0;
+}
+.item-content {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  margin:15px;
+  margin-right: 10px;
+  padding:1px 2px 7px 2px;
+  cursor: pointer;
+  box-shadow: 0 1px 15px 0 rgba(0, 0, 0,0.3);
+  background: lightgrey;
+  text-align: center;
+
+}
+.item.muuri-item-dragging .item-content{
+  background: #ff4d4d;
+}
+.item.muuri-item-releasing .item-content{
+  background: #ff4d4d;
+}

@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+{% block style%}
+<style media="screen">
+  .main-header{
+  background-color: rgba(255, 51, 51, 1.0);
+  color:white;
+  box-shadow: 0 1px 15px 0 rgba(192,72,25,0.32);
+  height: 80px;
+  position: fixed;
+  text-align:center;
+  font-size:30px;
+  top: 0;
+  left: 0;
+  right: 0;
+  }
+  .cairo{
+    font-family: 'Cairo', sans-serif;
+  }
+  .main-content{
+    margin-top:100px;
+    font-family: 'Cairo', sans-serif;
+    font-size:20px;
+  }
+  .swal-title {
+    margin: 0px;
+    font-size: 16px;
+    box-shadow: 0px 1px 1px rgba(192,192,192,0.3);
+    margin-bottom: 28px;
+  }
+  .swal-text{
+    font-family: 'Cairo', sans-serif;
+  }
+
+
+</style>
+{% endblock%}
+
+{% block cont %}
+<script type="text/javascript">
+  const username = `{{username}}`;
+  const room_id = `{{room_id}}`;
+  const join = `{{join}}`;
+</script>
+
+<header class = "main-header cairo">
+    Bingo!
+</header>
+
+<div class="main-content">
+
+<div id="msg-box" class = "lobby-messages-box" style="overflow: auto">
+<input type="text" class="cairo" style="font-size:15px;" id="user_message" placeholder="Type your messages here" autocomplete="off">
+      <button type="button" class="cairo btn btn-inline btn-danger" style="font-size:15px;" id="send_message">Send</button>
+</div>
+<center>
+  <form id="start-request" action="/game" method="post">
+  <input type="hidden" name="username" value="{{username}}">
+  <input type="hidden" name="room_id" value="{{room_id}}">
+  <input type="hidden" name="join" value="{{join}}">
+  <input type="hidden" name="rearranged" value="False"></form>
+  {%if not join%}
+  <p class="cairo">Welcome {{username}}!<br> Room successfully created!<br>
+     Your friends can join with the following room id: {{room_id}}<br>
+     The above room id is to be entered in the 'room id' field in join room page. <br>
+   <b>NOTE: Upto a maximum of 6 in a room are allowed.</b></p>
+  <div class="game-start">
+  <p>Start the game by clicking the button below.Make sure your friends are ready!</p>
+  <button type="submit" id="start-button"class="btn btn-success btn-block">Start</button>
+  </div>
+  <br><br>
+  <div class="users_connected">
+    <p>The following people are in this room:</p>
+    <div id="users" class= 'innerdiv_users_connected'>
+
+    </div>
+</div>
+  {% else %}
+  <p>Welcome {{username}}! <br>Room successfully joined!<br>
+     Your friends can also join with the following room id: {{room_id}}<br>
+     The above room id is to be entered in the 'room id' field in join room page.<br>
+    <b>NOTE: Upto a maximum of 6 in a room are allowed.</b></p>
+  <div class="game-start">
+    <p>Status:</p>
+    <p>Waiting for lobby leader to start the game...</p>
+  </div>
+  <br><br>
+<div class="users_connected">
+  <p>The following people are in this room:</p>
+  <div id="users" class= 'innerdiv_users_connected'>
+
+  </div>
+</div>
+  {%endif%}
+</center>
+</div>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="{{url_for('static',filename='scripts/bootstrap.min.js')}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script type="text/javascript" charset="utf-8" src = "{{url_for('static',filename='scripts/lobby.js')}}"></script>
+{% endblock %}

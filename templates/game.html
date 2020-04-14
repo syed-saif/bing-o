@@ -1,0 +1,142 @@
+{% extends "layout.html" %}
+{% block style %}
+<style media="screen">
+  .main-header{
+  background-color: rgba(255, 51, 51, 1.0);
+  color:white;
+  box-shadow: 0 1px 15px 0 rgba(192,72,25,0.32);
+  height: 80px;
+  position: fixed;
+  text-align:center;
+  font-size:30px;
+  top: 0;
+  left: 0;
+  right: 0;
+  }
+  .cairo{
+    font-family: 'Cairo', sans-serif;
+  }
+  .main-content{
+    margin-top:100px;
+    font-family: 'Cairo', sans-serif;
+    font-size:20px;
+  }
+  .swal-title {
+    margin: 0px;
+    font-size: 16px;
+    box-shadow: 0px 1px 1px rgba(192,192,192,0.3);
+    margin-bottom: 28px;
+  }
+  .swal-text{
+    font-family: 'Cairo', sans-serif;
+  }
+  #timer{
+    position:absolute;
+    right:0;
+    margin-right:100px;
+    padding:7px;
+    border:solid 3px #ff3333;
+  }
+  </style>
+{% endblock %}
+{% block css%}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+{% endblock %}
+{% block cont%}
+<script type="text/javascript">
+  const username = `{{username}}`;
+  const room_id = `{{room_id}}`;
+  const join = `{{join}}`;
+</script>
+<header class = "main-header cairo">
+    Bingo!
+</header>
+
+<div class="main-content">
+
+{% if not rearranged %}
+<form id="rearranged" action="/game" method="post">
+<input type="hidden" name="username" value="{{username}}">
+<input type="hidden" name="room_id" value="{{room_id}}">
+<input type="hidden" name="join" value="{{join}}">
+<input type="hidden" name="rearranged" value="True"></form>
+<div class="text-above-grid cairo">
+  <p>Rearrange the buttons in the order you wish.<br><b>Drag buttons and drop them on other buttons to swap them.<br>
+    Double click on a button and drag to start dragging.</b><br>
+  The game will start as soon as the timer ends.</p>
+</div>
+<div id="timer"  class="cairo">
+  <span>Time left: </span><span class="values"></span>
+</div>
+
+<div id="score-board" class="cairo" >
+  <p>Score Board:</p>
+</div>
+
+<div class="grid">
+{%for i in range(1,26)%}
+  <div class="item" data-id="{{i}}">
+    <div class="item-content">
+      <button type="button"  class="btn btn-inline btn-xlarge btn-danger cairo">{{i}}</button>
+    </div>
+  </div>
+{% endfor %}
+</div>
+{% else %}
+<div id="msg-box" class = "lobby-messages-box" style="overflow: auto">
+<input type="text" class="cairo" style="font-size:15px;" id="user_message" placeholder="Type your messages here" autocomplete="off">
+      <button type="button" class="cairo btn btn-inline btn-danger" style="font-size:15px;" id="send_message">Send</button>
+</div>
+
+<div class="whos-turn cairo">
+  <p>Current turn : <span id="ct"></span></p>
+</div>
+<div id="score-board" class="cairo" >
+  <p>Score Board:</p>
+</div>
+
+<div id = "finished">
+
+</div>
+
+<div class="grid">
+{%for i in order%}
+  <div class="item" >
+    <div class="item-content">
+      <button type="button"  data-id="{{i}}" class="btn btn-inline btn-xlarge btn-danger bingo-btns cairo">{{i}}</button>
+    </div>
+  </div>
+{% endfor %}
+</div>
+{% endif %}
+</div>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="{{url_for('static',filename = 'scripts/bootstrap.min.js')}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js" integrity="sha256-eVNjHw5UeU0jUqPPpZHAkU1z4U+QFBBY488WvueTm88=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/web-animations/2.3.2/web-animations.min.js" integrity="sha256-jZSPoJvWdpyDRRHRaGnqmpz1DN1L1XLEKpb/7iTLdro=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/muuri/0.5.4/muuri.min.js" integrity="sha256-y90OsT+X0MvywswW0wtpdXrU3XI0jxLR5assu76umvw=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/easytimer@1.1.1/src/easytimer.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+{% if not rearranged %}
+ <script type="text/javascript">
+    var grid = new Muuri('.grid',{
+    dragEnabled:true,
+    dragSortPredicate: {
+        threshold: 40,
+        action: 'swap'
+        }
+    });
+ </script>
+ <script type="text/javascript" charset="utf-8" src = "{{url_for('static',filename='scripts/game_before_rearranged.js')}}"></script>
+{% else %}
+  <script type="text/javascript">
+    var grid = new Muuri('.grid');
+    </script>
+    <script type="text/javascript" charset="utf-8" src = "{{url_for('static',filename='scripts/game_after_rearranged.js')}}"></script>
+{% endif %}
+
+
+{% endblock %}

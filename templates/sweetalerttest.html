@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+{% block css%}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+{% endblock %}
+
+{% block style%}
+<style media="screen">
+  .head{
+  background-color: #ff3333;
+  box-shadow: 0 1px 15px 0 rgba(192,72,25,0.32);
+  height: 80px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.swal-title {
+  margin: 0px;
+  font-size: 16px;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.21);
+  margin-bottom: 28px;
+}
+
+#basicUsage{
+  margin-top:50px;
+  position:absolute;
+  left:0;
+  margin-left:160px;
+  border: solid 3px red;
+  padding : 5px;
+}
+.grid{
+position: relative;
+margin-left: 400px;
+margin-top: 50px;
+margin-right: 400px;
+border: 3px solid #ff4d4d;
+}
+
+.item{
+  display: block;
+  position: absolute;
+  height: 100px;
+  width: 100px;
+  margin : 0px;
+  text-align: center;
+  z-index: 1;
+}
+
+.item.muuri-item-dragging {
+  z-index: 3;
+}
+.item.muuri-item-releasing {
+  z-index: 2;
+}
+.item.muuri-item-hidden {
+  z-index: 0;
+}
+.item-content {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  margin:15px;
+  margin-right: 10px;
+  cursor: pointer;
+  background: blue;
+  text-align: center;
+
+}
+.item.muuri-item-dragging .item-content{
+  background: red;
+}
+.item.muuri-item-releasing .item-content{
+  background: tomato;
+}
+
+</style>
+
+{% endblock%}
+{% block cont%}
+<header class = "head">
+  some title
+</header>
+
+<form id="redirect" action="/home" method="get">
+
+</form>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/easytimer@1.1.1/src/easytimer.min.js"></script>
+<script type="text/javascript">
+
+  var timer = new Timer();
+
+  timer.addEventListener('targetAchieved' ,function (e) {
+      $('#basicUsage .values').html('game starting..');
+      console.log('start');
+  });
+
+
+
+
+  swal({
+  title: "Here's out it works",
+  text: "1.Before the game starts the players get 1 minute to re-arrange the numbers in the order they wish.\n2.After the time has elapsed, each player will get a turn to click one button(or number).\n3.A button can be clicked only once and cannot be used again.\n4.On each turn, the clicked button will be disabled to all the players in the game.\n5.After a number of turns, when either a row or a column or a diagonal of buttons are clicked for a player, they are awarded one point.\n6.The first player to score 5 points, wins!\n(B-I-N-G-O!! , where each letter denotes a point).   ",
+  button: {
+      text: "GOT IT!",
+    icon : "info",
+    closeModal: true,
+  }
+}).then(() => {
+  console.log('modal closed');
+  console.log(swal.getState());
+  window.location.replace('/home');
+  });
+
+window.addEventListener("beforeunload", function(e) {
+  e.preventDefault();
+  e.returnValue =  "DO u really wanna leave?";
+});
+</script>
+{% endblock %}
