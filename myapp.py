@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import random
+import os
 import numpy as np
 import eventlet
 eventlet.monkey_patch()
