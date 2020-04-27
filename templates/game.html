@@ -37,6 +37,9 @@
     padding:7px;
     border:solid 3px #ff3333;
   }
+  #finished{
+    margin-bottom: 20px;
+  }
   </style>
 {% endblock %}
 {% block css%}
@@ -89,15 +92,18 @@
 </div>
 
 <div class="whos-turn cairo">
-  <p>Current turn : <span id="ct"></span></p>
+  <p id='ct'>Players are being connected...<p>
 </div>
 <div id="score-board" class="cairo" >
   <p>Score Board:</p>
 </div>
 
-<div id = "finished">
-
+<center>
+<div id = "finished" class="cairo">
+ <p><b>Click on any button, when it's your turn</b>. The clicked button is counted<br> as a striked one. Try to get a row
+   or a column or a diagonal <br>of such striked buttons to score a point!</p>
 </div>
+</center>
 
 <div class="grid">
 {%for i in order%}

@@ -45,13 +45,13 @@ a:hover {
   position:absolute;
   left:0 ;
   margin-top:25px;
-  margin-left:460px;
+  margin-left: 33vw;
 }
 .join-button{
   position:absolute;
   right:0;
   margin-top:25px;
-  margin-right:460px;
+  margin-right: 33vw;
 }
 
 .main-header nav{
@@ -118,5 +118,14 @@ ul{
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+{%if user_already_exists %}
+<script type="text/javascript">
+  swal({
+    title: "oops!!",
+    text: "Seems that someone else has already taken this username in this room!!.\n Please enter a different username as players in a given room must have unique names.",
+    icon:"warning"
+  });
+</script>
+{% endif %}
 <script type="text/javascript" charset="utf-8" src = "{{url_for('static',filename='scripts/home.js')}}"></script>
 {% endblock %}

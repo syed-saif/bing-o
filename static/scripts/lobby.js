@@ -91,16 +91,7 @@ document.addEventListener("DOMContentLoaded", function() {
       update_connected_users({event:'leave',usr:data.username });
     }
   });
-  // socket.on('sys messages', data => {
-  //   const p1 = document.createElement('p');
-  //   const br = document.createElement('br');
-  //   p1.innerHTML = data.msg;p1.setAttribute("class", "sys-message-in-chatbox");
-  //   document.querySelector("#msg-box").append(p1);
-  //   if(data.leader=='False' && data.joinee!=username){
-  //     players.push(data.joinee); const p2 = document.createElement('p'); p2.innerHTML = '->' + data.joinee;
-  //   document.querySelector(".users_connected").append(p2);}
-  // });
-
+  
 //data about existing users in the room for the new user
   socket.on('clients_info', data =>{
     leader = data.leader;
@@ -112,11 +103,20 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
 
+//event handler function when players leave 
+function left() {
+  socket.emit('leaving lobby',{'username':username,'room_id':room_id});
+}
+
+window.addEventListener("beforeunload", left);
+
 //to start the game
 try{
       document.querySelector('#start-button').onclick = ()=> {
-        if(players.length > 1){socket.emit('game-start' , room_id);
-        document.getElementById("start-request").submit();}
+        if(players.length > 1){
+          socket.emit('game-start' , room_id);
+          window.removeEventListener("beforeunload",left);
+          document.getElementById("start-request").submit();}
         else{
           swal({
             title:'oops!',
@@ -128,12 +128,9 @@ try{
 }
 catch(err){}
 
-window.addEventListener("beforeunload", function(e) {
-  socket.emit('leaving lobby',{'username':username,'room_id':room_id});
-});
 
 socket.on('game start',data => {
-    console.log(data);
+    window.removeEventListener("beforeunload",left);
     socket.emit('remove from room',room_id);
     document.getElementById("start-request").submit();
   });

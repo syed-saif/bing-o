@@ -5,18 +5,18 @@ document.addEventListener("DOMContentLoaded", function() {
   var ll = ''; //lobby leader's name
   var positions = []; //all players' position when game ends ....(players' name are pushed into array as they finish )
   var finished = false; //to stop all functionalities once game finishes
+  var isTheirCurrentTurn = false; //used to check if the this player has to play currently; used in beforeunload event
 
-  socket.emit('joined second game page',room_id);
+  socket.emit('joined second game page',{'username':username,'room_id':room_id});
 
   function update_current_turn(user){
     if(user == username){
-    document.getElementById('ct').innerHTML = "It's your turn!";}
-    else{document.getElementById('ct').innerHTML = user;}
+    document.getElementById('ct').innerHTML = "Current turn: It's your turn!";}
+    else{document.getElementById('ct').innerHTML = 'Current turn: '+ user;}
   }
 
   socket.on('players' , data => {
       ll = data[0];
-      update_current_turn(ll);
       for(i=0;i<data.length;i++){
         scores[data[i]] = 0;
         const p = document.createElement('p');
@@ -54,35 +54,50 @@ document.addEventListener("DOMContentLoaded", function() {
       document.getElementById('msg-box').append(p);
     }
 
-    append_sys_msg_to_lobby_chat("Game started!");
+    
+//event handler function when players leave 
+  function left() {
+    socket.emit('left second game page',{'username':username,'room_id':room_id,'current_turn':isTheirCurrentTurn});
+  }
+
+  window.addEventListener("beforeunload", left);
+
 
 //
   function reset_btns(x){
     socket.emit('user-turn',{'username':username,'room_id':room_id,'button-clicked':x});
     }
 
-function allow_click(){
-
-  $('button.bingo-btns').on('click',function(){
-  $(this).prop('disabled' , 'true') ;
-  $(this).attr('style', 'cursor:not-allowed;');
-  reset_btns($(this).text());
-  $('button.bingo-btns').off('click');
-  });
-}
-
-
-
-  if(join == "False"){ //only be true for lobby leader
-    allow_click();
+  function allow_click(){
+   
+    $('button.bingo-btns').on('click',function(){
+    $(this).prop('disabled' , 'true') ;
+    $(this).attr('style', 'cursor:not-allowed;');
+    reset_btns($(this).text());
+    $('button.bingo-btns').off('click');
+    isTheirCurrentTurn = false;
+    });
+  
   }
 
+  append_sys_msg_to_lobby_chat("Waiting for players..");
+
+  socket.on('players ready', data => {
+    update_current_turn(ll);
+    append_sys_msg_to_lobby_chat("Game started!");
+    if(join == "False"){ //only be true for lobby leader
+        allow_click();
+      }
+    
+  });
 
   socket.on('current turn', data => {
-
-    $('[data-id=' + data.disable +']').prop('disabled' , 'true') ;
-    $('[data-id=' + data.disable +']').attr('style', 'cursor:not-allowed;');
-    update_current_turn(data.currentuser);
+    isTheirCurrentTurn = true;
+    if(data.hasOwnProperty('disable')){
+        $('[data-id=' + data.disable +']').prop('disabled' , 'true') ;
+        $('[data-id=' + data.disable +']').attr('style', 'cursor:not-allowed;');
+        update_current_turn(data.currentuser);
+      }
     if(data.currentuser == username && !(finished)){
       allow_click();
     }
@@ -94,23 +109,29 @@ function allow_click(){
       if(data.hasOwnProperty(user)){
          const t = scores[user];
          scores[user] += data[user];
-         if(scores[user] == 5 && user==username){
-           socket.emit('player finished',{'username':user,'room_id':room_id});
-           positions.push(user);
-           const p = document.createElement('p'); p.innerHTML = 'You have finished! Waiting for others to finish...';
-           document.getElementById('finished').append(p);
+         if(scores[user] == 5){        //as soon as one player finishes their name is pushed to 'positions' array in all the clients
+          positions.push(user);
+          if(user==username){   //only for that client , a socket message is emitted(to save network calls) and finished prompt is displayed
+             socket.emit('player finished',{'username':user,'room_id':room_id});
+             const p = document.createElement('p'); p.innerHTML = 'You have finished! Waiting for others to finish...';
+             document.getElementById('finished').append(p);}
          }
          document.getElementById(user).innerHTML += arr.slice(t,scores[user]).join('') ;
         }
       }
   });
 
-
+  socket.on('player left', data => {
+    const usr = data.username
+    append_sys_msg_to_lobby_chat( usr + " has left the game");
+    $('#' + usr).remove();
+  });
+  
   socket.on('game finished', data => {
     finished = true;
 
-    const p = document.createElement('p'); p.innerHTML = "Game has finished, please return to home page to play a new game."
-    document.getElementById('finished').append(p);
+    $('#finished').empty();
+    $('#finished').html("<p><b>You have finished!</b><br>Waiting for other to finish...</p>");
 
     for(player in scores){
       if(scores.hasOwnProperty(player)){
@@ -131,10 +152,30 @@ function allow_click(){
       button: false,
       closeOnClickOutside: false,
       closeOnEsc: false,
-      timer:15000,
+      timer:17000,
     }).then(() => {
+      window.removeEventListener("beforeunload", left);
       window.location.replace('/home');
     });
   });
+
+  socket.on('force stop', data => {    //when players leave the game and only one is left, the game is force stopped
+    finished = true;
+    swal({
+      title:'oops!!',
+      text: "Seems like others left and you're the only one playing!! \n Since the game needs at least two people to play, you can no longer continue this game. \nYou will be redirected to home page in a few seconds.." ,
+      icon:'warning',
+      button: false,
+      closeOnClickOutside: false,
+      closeOnEsc: false,
+      timer:13000
+      }).then(() => {
+        window.removeEventListener("beforeunload", left);
+        window.location.replace('/home');
+      });
+  });
+
+
+  
 
 });

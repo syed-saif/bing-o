@@ -70,7 +70,9 @@
 
 .grid{
 position: relative;
-margin : 50px 420px 10px 420px;
+width:470px;
+height:500px;
+margin:50px 35vw;
 border: 3px solid #ff4d4d;
 }
 
