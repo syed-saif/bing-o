@@ -79,7 +79,7 @@ def check_for_points(dt, ri): #returns a dict with username as keys and their sc
                 rd[i] = pts
     if len(rd)!=0:
         r.set(ri, orjson.dumps(dt).decode('utf-8'))
-        return rd  
+        return rd
     else:
         return 0
 
@@ -158,14 +158,16 @@ def f3():
                 return render_template("game.html",title ="Bingo! | game",rearranged=False,username = usr,room_id=ri,join = eval(data['join']))
             else:
                 l = [j for i in d[usr] for j in i]
-                add_dict_to_a_user(usr,ri,dt) #dt is the json-to-python converted dict, passed to save computations 
+                add_dict_to_a_user(usr,ri,dt) #dt is the json-to-python converted dict, passed to save computations
                 return render_template("game.html",title ="Bingo! | game",rearranged=True,username = usr,room_id=ri,order = l,join=eval(data['join']))
         else:
             return "<h1>Please either create or join a room and then start the game</h1>"
     else:
         return "<h1>Please either create or join a room and then start the game</h1>"
 
-
+@app.route('/about')
+def about():
+    return render_template('about.html' ,title="Bingo! | About")
 
 @socketio.on('first event')
 def handler(h):
@@ -174,7 +176,7 @@ def handler(h):
 @socketio.on('lobby join')
 def on_join(data):
     ri = data['room_id']
-    usr = data['username']    
+    usr = data['username']
     join_room(ri)
     if data['room_creation'] == 'True':
         emit('room updates',{'event':'create','username':usr},room=ri)
@@ -198,11 +200,11 @@ def leave(data):
     ri = data['room_id']
     leave_room(ri)
     if r.exists(ri)==1:
-        dt = orjson.loads(r.get(ri)) 
+        dt = orjson.loads(r.get(ri))
         d = dt['users']
         if usr == d[0]:
             emit('room updates',{'event':'leave','username':usr+' (lobby leader)'},room=ri)
-            r.delete(ri) 
+            r.delete(ri)
         else:
             d.remove(usr)
             r.set(ri, orjson.dumps(dt).decode('utf-8'))
@@ -242,7 +244,7 @@ def order(data):
     if len(d[user])==0:
         d[user].extend(l)
         r.set(ri, orjson.dumps(dt).decode('utf-8')) #saving changes in db
-        
+
 @socketio.on('left first game page')
 def kick1(data):
     usr = data['username']
@@ -295,11 +297,11 @@ def kick2(data):
         dt = orjson.loads(r.get(ri))
         l = list(dt['users'].keys()) #list of users playing(including the one who left)
         dt['users'].pop(usr, None)
-        r.set(ri, orjson.dumps(dt).decode('utf-8'))    
+        r.set(ri, orjson.dumps(dt).decode('utf-8'))
         if len(dt['users'])==1: #if only one player is playing then the game is force stopped
             emit('force stop',True,room=ri)
             r.delete(ri)
-        elif data['current_turn']: #if the (current)player leaves the game, then the roundrobin has to be adjusted: 
+        elif data['current_turn']: #if the (current)player leaves the game, then the roundrobin has to be adjusted:
             nt = l.index(usr) + 1 if usr != l[-1] else 0 #index of user who is supposed to play the next turn
             emit('current turn',{'currentuser':l[nt]} ,room=ri)
         emit('player left', {'username':usr} ,room=ri)
