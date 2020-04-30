@@ -54,8 +54,8 @@ document.addEventListener("DOMContentLoaded", function() {
       document.getElementById('msg-box').append(p);
     }
 
-    
-//event handler function when players leave 
+
+//event handler function when players leave
   function left() {
     socket.emit('left second game page',{'username':username,'room_id':room_id,'current_turn':isTheirCurrentTurn});
   }
@@ -69,15 +69,16 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
   function allow_click(){
-   
+
     $('button.bingo-btns').on('click',function(){
-    $(this).prop('disabled' , 'true') ;
+    $(this).prop('disabled' , 'true') ; //because buttons can be clicked only once
     $(this).attr('style', 'cursor:not-allowed;');
+    $(this).removeClass('btn-danger').addClass('btn-light'); //changes the button color to light indicating that the button is used and can no longer be used
     reset_btns($(this).text());
     $('button.bingo-btns').off('click');
     isTheirCurrentTurn = false;
     });
-  
+
   }
 
   append_sys_msg_to_lobby_chat("Waiting for players..");
@@ -88,14 +89,14 @@ document.addEventListener("DOMContentLoaded", function() {
     if(join == "False"){ //only be true for lobby leader
         allow_click();
       }
-    
+
   });
 
   socket.on('current turn', data => {
     isTheirCurrentTurn = true;
     if(data.hasOwnProperty('disable')){
         $('[data-id=' + data.disable +']').prop('disabled' , 'true') ;
-        $('[data-id=' + data.disable +']').attr('style', 'cursor:not-allowed;');
+        $('[data-id=' + data.disable +']').attr('style', 'cursor:not-allowed;').removeClass('btn-danger').addClass('btn-light');
         update_current_turn(data.currentuser);
       }
     if(data.currentuser == username && !(finished)){
@@ -126,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function() {
     append_sys_msg_to_lobby_chat( usr + " has left the game");
     $('#' + usr).remove();
   });
-  
+
   socket.on('game finished', data => {
     finished = true;
 
@@ -176,6 +177,6 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
 
-  
+
 
 });
