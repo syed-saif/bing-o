@@ -7,13 +7,12 @@
   box-shadow: 0 1px 15px 0 rgba(192,72,25,0.32);
   height: 80px;
   position: fixed;
-  text-align:center;
   font-size:30px;
   top: 0;
   left: 0;
   right: 0;
   }
-  
+
   .main-content{
     margin-top:100px;
     font-family: 'Cairo', sans-serif;
@@ -31,7 +30,7 @@
 </script>
 
 <header class = "main-header cairo">
-    Bingo!
+    <span style="padding-left:43vw;">Bingo!</span>
 </header>
 
 <div class="main-content">
@@ -47,7 +46,7 @@
   <input type="hidden" name="join" value="{{join}}">
   <input type="hidden" name="rearranged" value="False"></form>
   {%if not join%}
-  <p class="cairo">Welcome {{username}}!<br> Room successfully created!<br>
+  <p>Welcome {{username}}!<br> Room successfully created!<br>
      Your friends can join with the following room id: {{room_id}}<br>
      The above room id is to be entered in the 'room id' field in join room page. <br>
    <b>NOTE: Upto a maximum of 6 in a room are allowed.</b></p>
