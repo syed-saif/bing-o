@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    var socket = io(location.protocol + '//' + document.domain + ':' + location.port);
+    var socket = io();
 
     socket.on('connect', function() {
         socket.emit('first event', {
