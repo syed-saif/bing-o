@@ -105,7 +105,7 @@ def f1():
     query_params = request.args
 
     if 'create' in query_params and 'join' in query_params:
-        return '<h1>Hey smartass! It won't work xD</h1>'
+        return '<h1>Hey smartass! It won\'t work xD</h1>'
     if 'create' in query_params:
         return render_template('home.html', title = 'Bingo! | Play Bingo online with friends', create = True)
     if 'join' in query_params:
@@ -321,4 +321,4 @@ def finished(data):
         check_if_game_finished(d,ri)
 
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app, host=os.environ.get('APP_HOST'), port=os.environ.get('APP_PORT'))

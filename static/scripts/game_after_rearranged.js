@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    var socket = io(location.protocol + '//' + document.domain + ':' + location.port);
+    var socket = io();
     var scores = {};
     var ll = ''; //lobby leader's name
     var positions = []; //all players' position when game ends ....(players' name are pushed into array as they finish )

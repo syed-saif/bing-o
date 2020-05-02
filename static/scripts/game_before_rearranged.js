@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    var socket = io(location.protocol + '//' + document.domain + ':' + location.port);
+    var socket = io();
     var timer = new Timer();
 
     socket.on('players', data => {
