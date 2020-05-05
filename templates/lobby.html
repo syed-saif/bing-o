@@ -1,27 +1,5 @@
 {% extends "layout.html" %}
 
-{% block style%}
-    <style>
-        .main-header {
-            background-color: rgba(255, 51, 51, 1.0);
-            color: white;
-            box-shadow: 0 1px 15px 0 rgba(192, 72, 25, 0.32);
-            height: 80px;
-            position: fixed;
-            font-size: 30px;
-            top: 0;
-            left: 0;
-            right: 0;
-        }
-
-        .main-content {
-            margin-top: 100px;
-            font-family: 'Cairo', sans-serif;
-            font-size: 20px;
-        }
-    </style>
-{% endblock%}
-
 {% block cont %}
     <script type="text/javascript">
         const username = `{{username}}`;
@@ -29,57 +7,90 @@
         const join = `{{join}}`;
     </script>
 
-    <header class="main-header cairo">
-        <span style="padding-left:43vw;">Bingo!</span>
-    </header>
-
-    <div class="main-content">
-        <div id="msg-box" class="lobby-messages-box" style="overflow: auto">
-            <input type="text" class="cairo" style="font-size:15px;" id="user_message" placeholder="Type your messages here"
-                autocomplete="off">
-            <button type="button" class="cairo btn btn-inline btn-danger" style="font-size:15px;"
-                id="send_message">Send</button>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a href="/home" class="navbar-brand">Bing-o!</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mobileNav" aria-controls="mobileNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="mobileNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://github.com/syed-saif/bing-o">Github</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <center>
-            <form id="start-request" action="/game" method="post">
-                <input type="hidden" name="username" value="{{username}}">
-                <input type="hidden" name="room_id" value="{{room_id}}">
-                <input type="hidden" name="join" value="{{join}}">
-                <input type="hidden" name="rearranged" value="False"></form>
-            {%if not join%}
-                <p>Welcome {{username}}!<br> Room successfully created!<br>
-                    Your friends can join with the following room id: {{room_id}}<br>
-                    The above room id is to be entered in the 'room id' field in join room page. <br>
-                    <b>NOTE: Upto a maximum of 6 in a room are allowed.</b></p>
-                <div class="game-start">
-                    <p>Start the game by clicking the button below.Make sure your friends are ready!</p>
-                    <button type="submit" id="start-button" class="btn btn-success btn-block">Start</button>
-                </div>
-                <br><br>
-                <div class="users_connected">
-                    <p>The following people are in this room:</p>
-                    <div id="users" class='innerdiv_users_connected'>
+    </nav>
 
+    <div class="container">
+        <div class="jumbotron mt-4">
+            <h1 class="display-4">Welcome {{username}}.</h1>
+            <p class="lead">Room has been created and the room ID is <b>{{room_id}}</b>. Your friends can also join with this ID.</p>
+            <p class="text-danger">Only maximum of 6 players can join a room</p>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 mt-2">
+                <div class="card">
+                    <div class="card-header">
+                        Chat
+                    </div>
+                    <ul class="list-group list-group-flush" id="msg-box"></ul>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8 mt-1">
+                                <input type="text" class="form-control" placeholder="Type here" id="user_message">
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 mt-1">
+                                <button class="btn btn-primary btn-block" id="send_message">Send</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            {% else %}
-                <p>Welcome {{username}}! <br>Room successfully joined!<br>
-                    Your friends can also join with the following room id: {{room_id}}<br>
-                    The above room id is to be entered in the 'room id' field in join room page.<br>
-                    <b>NOTE: Upto a maximum of 6 in a room are allowed.</b></p>
-                <div class="game-start">
-                    <p>Status:</p>
-                    <p>Waiting for lobby leader to start the game...</p>
-                </div>
-                <br><br>
-                <div class="users_connected">
-                    <p>The following people are in this room:</p>
-                    <div id="users" class='innerdiv_users_connected'>
-
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 mt-2">
+                <div class="card">
+                    <div class="card-header">Players</div>
+                    <div class="card-body">
+                        <div id="users"></div>
                     </div>
                 </div>
-            {%endif%}
-        </center>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 mt-2">
+                {% if not join %}
+                    <form id="start-request" action="/game" method="post">
+                        <input type="hidden" name="username" value="{{username}}">
+                        <input type="hidden" name="room_id" value="{{room_id}}">
+                        <input type="hidden" name="join" value="{{join}}">
+                        <input type="hidden" name="rearranged" value="False">
+                    </form>
+                    <div class="card">
+                        <div class="card-header">Room Status</div>
+                        <div class="card-body">
+                            You can start the game by clicking the button below
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary btn-block" type="submit" id="start-button">Start Game</button>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="card">
+                        <div class="card-header">Room Status</div>
+                        <div class="card-body">
+                            The game will start once the room leader decides to start.
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
     <script type="text/javascript" charset="utf-8" src="{{url_for('static',filename='scripts/lobby.js')}}"></script>
 {% endblock %}

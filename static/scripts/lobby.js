@@ -41,17 +41,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     socket.on('lobby chat', function(data) {
-        var p = document.createElement('p');
-        p.innerHTML = data.username + ' : ' + data.msg;
-        p.setAttribute('class', 'user-message-in-chatbox');
-        document.querySelector('#msg-box').append(p);
+        var li = document.createElement('li');
+        li.innerHTML = data.username + ' : ' + data.msg;
+        li.setAttribute('class', 'list-group-item');
+        document.getElementById('msg-box').append(li);
     });
 
     function append_sys_msg_to_lobby_chat(x) { //this function appends whatever string given as parameter, to the msg box as a system message
-        var p = document.createElement('p');
-        p.innerHTML = x;
-        p.setAttribute('class', 'sys-message-in-chatbox');
-        document.getElementById('msg-box').append(p);
+        var li = document.createElement('li');
+        li.innerHTML = x;
+        li.setAttribute('class', 'list-group-item');
+        document.getElementById('msg-box').append(li);
     }
 
     //function to update the connected users(when a users joins or leaves the room)
