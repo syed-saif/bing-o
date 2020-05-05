@@ -11,13 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-        - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-        - name: Publish Docker Image
-            uses: docker/build-push-action@v1
-            with:
-                username: ${{ secrets.DOCKER_USERNAME }}
-                password: ${{ secrets.DOCKER_PASSWORD }}
-                repository: ${{ secrets.DOCKER_USERNAME }}/bing-o/package
-                registry: docker.pkg.github.com
-                tag_with_ref: true
+    - name: Publish Docker Image
+    uses: docker/build-push-action@v1
+    with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: ${{ secrets.DOCKER_USERNAME }}/bing-o/package
+        registry: docker.pkg.github.com
+        tag_with_ref: true
