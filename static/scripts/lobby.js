@@ -58,11 +58,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function update_connected_users(x) { //the object x is of the form : {event:join or leave,usr:johndoe}
         if (x.event == 'join') {
             players.push(x.usr);
-            var p = document.createElement('p');
-            p.innerHTML = '->' + x.usr;
-            p.setAttribute('class', 'users-connected');
-            p.setAttribute('id', '_' + x.usr + '_'); //ids' are always like _saif_  so that theres no problem with other ids
-            document.getElementById('users').append(p);
+            var li = document.createElement('li');
+            li.innerHTML = x.usr + ' joined this room';
+            li.setAttribute('class', 'list-group-item');
+            li.setAttribute('id', '_' + x.usr + '_'); //ids' are always like _saif_  so that theres no problem with other ids
+            document.getElementById('users').append(li);
         } else {
             if (x.usr == leader + ' (lobby leader)') {
                 swal({
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
 
-            var ps = document.getElementById('users').querySelectorAll('p');
+            var ps = document.getElementById('users').querySelectorAll('li');
             for (i = 0; i < ps.length; i++) {
                 if (players[i] == x.usr) {
                     players.splice(i, 1);
