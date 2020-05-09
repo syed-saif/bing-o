@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+    app:
+        image: docker.pkg.github.com/smartclash/bing-o/bundle:latest
+        environment:
+            SECRET_KEY: 6EGyD#hhMGSP^!2keTb5B&JA2fjJ&ikM
+        ports:
+            - '1234:1234'
+        depends_on:
+            - redis
+        restart: always
+        links:
+            - redis
+
+    redis:
+        image: redis:6-alpine
+        command: redis-server --requirepass passwordROFL
+        restart: always
